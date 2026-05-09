@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 720" font-family="Inter, system-ui, sans-serif">
+  <rect width="1100" height="720" fill="#F4F3F3"/>
+
+  <!-- Title -->
+  <text x="550" y="44" text-anchor="middle" font-size="22" font-weight="700" fill="#1A1628">The Catch Up Club — Architecture</text>
+  <text x="550" y="66" text-anchor="middle" font-size="13" fill="#818181">Multi-agent AI system for lecture analysis</text>
+
+  <!-- ── USER ── -->
+  <rect x="30" y="100" width="140" height="56" rx="12" fill="#fff" stroke="#DBDBDB" stroke-width="1.5"/>
+  <text x="100" y="122" text-anchor="middle" font-size="12" font-weight="600" fill="#1A1628">User</text>
+  <text x="100" y="140" text-anchor="middle" font-size="11" fill="#636363">YouTube URL</text>
+
+  <!-- User to Frontend -->
+  <line x1="170" y1="128" x2="240" y2="128" stroke="#DBDBDB" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ── FRONTEND ── -->
+  <rect x="240" y="88" width="160" height="220" rx="14" fill="#fff" stroke="#B85A00" stroke-width="2"/>
+  <text x="320" y="110" text-anchor="middle" font-size="12" font-weight="700" fill="#B85A00">React Frontend</text>
+  <text x="320" y="127" text-anchor="middle" font-size="10" fill="#818181">Vite + TypeScript</text>
+
+  <rect x="256" y="136" width="128" height="26" rx="6" fill="#FFF5ED" stroke="#DBDBDB" stroke-width="1"/>
+  <text x="320" y="153" text-anchor="middle" font-size="10" fill="#1A1628">Landing / URL Input</text>
+
+  <rect x="256" y="168" width="128" height="26" rx="6" fill="#FFF5ED" stroke="#DBDBDB" stroke-width="1"/>
+  <text x="320" y="185" text-anchor="middle" font-size="10" fill="#1A1628">Processing View (SSE)</text>
+
+  <rect x="256" y="200" width="128" height="26" rx="6" fill="#FFF5ED" stroke="#DBDBDB" stroke-width="1"/>
+  <text x="320" y="217" text-anchor="middle" font-size="10" fill="#1A1628">Student View + Language</text>
+
+  <rect x="256" y="232" width="128" height="26" rx="6" fill="#FFF5ED" stroke="#DBDBDB" stroke-width="1"/>
+  <text x="320" y="249" text-anchor="middle" font-size="10" fill="#1A1628">Faculty Audit View</text>
+
+  <rect x="256" y="264" width="128" height="26" rx="6" fill="#FFF5ED" stroke="#DBDBDB" stroke-width="1"/>
+  <text x="320" y="281" text-anchor="middle" font-size="10" fill="#1A1628">Provost Curriculum View</text>
+
+  <!-- Frontend to Backend -->
+  <line x1="400" y1="198" x2="480" y2="198" stroke="#DBDBDB" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="440" y="192" text-anchor="middle" font-size="9" fill="#818181">SSE + REST</text>
+
+  <!-- ── BACKEND ── -->
+  <rect x="480" y="88" width="180" height="380" rx="14" fill="#fff" stroke="#1A1628" stroke-width="2"/>
+  <text x="570" y="110" text-anchor="middle" font-size="12" font-weight="700" fill="#1A1628">Express Backend</text>
+  <text x="570" y="127" text-anchor="middle" font-size="10" fill="#818181">Node.js + TypeScript</text>
+
+  <!-- Routes -->
+  <rect x="496" y="136" width="148" height="20" rx="5" fill="#F4F3F3"/>
+  <text x="570" y="150" text-anchor="middle" font-size="9" fill="#636363">POST /api/analyze (SSE)</text>
+
+  <rect x="496" y="160" width="148" height="20" rx="5" fill="#F4F3F3"/>
+  <text x="570" y="174" text-anchor="middle" font-size="9" fill="#636363">POST /api/search</text>
+
+  <rect x="496" y="184" width="148" height="20" rx="5" fill="#F4F3F3"/>
+  <text x="570" y="198" text-anchor="middle" font-size="9" fill="#636363">POST /api/quiz</text>
+
+  <rect x="496" y="208" width="148" height="20" rx="5" fill="#F4F3F3"/>
+  <text x="570" y="222" text-anchor="middle" font-size="9" fill="#636363">POST /api/translate</text>
+
+  <rect x="496" y="232" width="148" height="20" rx="5" fill="#F4F3F3"/>
+  <text x="570" y="246" text-anchor="middle" font-size="9" fill="#636363">POST /api/provost</text>
+
+  <!-- Orchestrator label -->
+  <rect x="496" y="262" width="148" height="26" rx="6" fill="#1A162810" stroke="#1A162830" stroke-width="1"/>
+  <text x="570" y="279" text-anchor="middle" font-size="10" font-weight="600" fill="#1A1628">Orchestrator</text>
+
+  <!-- Agents -->
+  <text x="570" y="306" text-anchor="middle" font-size="10" font-weight="600" fill="#636363">AGENTS (parallel where possible)</text>
+
+  <rect x="496" y="314" width="148" height="22" rx="5" fill="#B85A0015" stroke="#B85A0040" stroke-width="1"/>
+  <text x="570" y="329" text-anchor="middle" font-size="10" fill="#B85A00">1. Transcript Agent</text>
+
+  <rect x="496" y="340" width="148" height="22" rx="5" fill="#B85A0015" stroke="#B85A0040" stroke-width="1"/>
+  <text x="570" y="355" text-anchor="middle" font-size="10" fill="#B85A00">2. Knowledge Agent</text>
+
+  <rect x="496" y="366" width="148" height="22" rx="5" fill="#B85A0015" stroke="#B85A0040" stroke-width="1"/>
+  <text x="570" y="381" text-anchor="middle" font-size="10" fill="#B85A00">3. Faculty Agent</text>
+
+  <rect x="496" y="392" width="148" height="22" rx="5" fill="#B85A0015" stroke="#B85A0040" stroke-width="1"/>
+  <text x="570" y="407" text-anchor="middle" font-size="10" fill="#B85A00">4. Study Agent</text>
+
+  <rect x="496" y="418" width="148" height="22" rx="5" fill="#32A29B15" stroke="#32A29B40" stroke-width="1"/>
+  <text x="570" y="433" text-anchor="middle" font-size="10" fill="#32A29B">Cache (in-memory)</text>
+
+  <!-- Backend to AI -->
+  <line x1="660" y1="360" x2="740" y2="360" stroke="#B85A00" stroke-width="1.5" marker-end="url(#arrorange)"/>
+
+  <!-- ── CLAUDE AI ── -->
+  <rect x="740" y="300" width="160" height="200" rx="14" fill="#fff" stroke="#B85A00" stroke-width="2"/>
+  <text x="820" y="322" text-anchor="middle" font-size="12" font-weight="700" fill="#B85A00">Claude AI</text>
+  <text x="820" y="339" text-anchor="middle" font-size="10" fill="#818181">Anthropic SDK</text>
+
+  <rect x="756" y="350" width="128" height="26" rx="6" fill="#FFF5ED" stroke="#DBDBDB" stroke-width="1"/>
+  <text x="820" y="363" text-anchor="middle" font-size="9" fill="#1A1628">claude-sonnet-4-6</text>
+  <text x="820" y="374" text-anchor="middle" font-size="9" fill="#636363">Knowledge, Study, Faculty, Search</text>
+
+  <rect x="756" y="384" width="128" height="26" rx="6" fill="#FFF5ED" stroke="#DBDBDB" stroke-width="1"/>
+  <text x="820" y="397" text-anchor="middle" font-size="9" fill="#1A1628">claude-haiku-4-5</text>
+  <text x="820" y="408" text-anchor="middle" font-size="9" fill="#636363">Translation (fast)</text>
+
+  <rect x="756" y="418" width="128" height="26" rx="6" fill="#FFF5ED" stroke="#DBDBDB" stroke-width="1"/>
+  <text x="820" y="435" text-anchor="middle" font-size="9" fill="#1A1628">Streaming responses</text>
+  <text x="820" y="446" text-anchor="middle" font-size="9" fill="#636363">SSE to frontend</text>
+
+  <rect x="756" y="452" width="128" height="36" rx="6" fill="#FFF5ED" stroke="#DBDBDB" stroke-width="1"/>
+  <text x="820" y="466" text-anchor="middle" font-size="9" fill="#1A1628">Parallel execution:</text>
+  <text x="820" y="478" text-anchor="middle" font-size="9" fill="#636363">Knowledge + Faculty run together</text>
+
+  <!-- Backend to YouTube -->
+  <line x1="570" y1="468" x2="570" y2="550" stroke="#DBDBDB" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ── YOUTUBE ── -->
+  <rect x="460" y="550" width="220" height="60" rx="12" fill="#fff" stroke="#DBDBDB" stroke-width="1.5"/>
+  <text x="570" y="574" text-anchor="middle" font-size="12" font-weight="600" fill="#1A1628">YouTube APIs</text>
+  <text x="570" y="594" text-anchor="middle" font-size="10" fill="#636363">Transcript fetch + oEmbed video info</text>
+
+  <!-- ── DEPLOYMENT ── -->
+  <rect x="740" y="540" width="320" height="140" rx="14" fill="#fff" stroke="#32A29B" stroke-width="2"/>
+  <text x="900" y="562" text-anchor="middle" font-size="12" font-weight="700" fill="#32A29B">Deployment</text>
+
+  <rect x="756" y="572" width="130" height="40" rx="8" fill="#32A29B15" stroke="#32A29B40" stroke-width="1"/>
+  <text x="821" y="588" text-anchor="middle" font-size="10" font-weight="600" fill="#32A29B">Railway</text>
+  <text x="821" y="603" text-anchor="middle" font-size="9" fill="#636363">Single service, auto-deploy</text>
+
+  <rect x="896" y="572" width="148" height="40" rx="8" fill="#32A29B15" stroke="#32A29B40" stroke-width="1"/>
+  <text x="970" y="588" text-anchor="middle" font-size="10" font-weight="600" fill="#32A29B">Build process</text>
+  <text x="970" y="603" text-anchor="middle" font-size="9" fill="#636363">Vite build served by Express</text>
+
+  <rect x="756" y="622" width="280" height="44" rx="8" fill="#F4F3F3"/>
+  <text x="896" y="638" text-anchor="middle" font-size="10" fill="#636363">Frontend dist/ served as static files</text>
+  <text x="896" y="652" text-anchor="middle" font-size="9" fill="#818181">Single URL, no separate frontend host needed</text>
+
+  <!-- Data flow labels -->
+  <text x="30" y="620" font-size="11" font-weight="600" fill="#1A1628">Data Flow:</text>
+  <rect x="30" y="630" width="390" height="70" rx="8" fill="#fff" stroke="#DBDBDB" stroke-width="1.5"/>
+  <text x="46" y="648" font-size="10" fill="#636363">1. User pastes YouTube URL</text>
+  <text x="46" y="664" font-size="10" fill="#636363">2. Transcript + Video info fetched from YouTube</text>
+  <text x="46" y="680" font-size="10" fill="#636363">3. Knowledge + Faculty agents run in parallel (Claude Sonnet)</text>
+  <text x="46" y="696" font-size="10" fill="#636363">4. Study agent runs after graph is ready (Claude Sonnet)</text>
+
+  <!-- Parallel brace between agents 2+3 -->
+  <line x1="490" y1="351" x2="490" y2="389" stroke="#B85A00" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="487" y="372" text-anchor="end" font-size="9" fill="#B85A00">||</text>
+
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#DBDBDB"/>
+    </marker>
+    <marker id="arrorange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#B85A00"/>
+    </marker>
+  </defs>
+</svg>

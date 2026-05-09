@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── ZS.com Palette ──────────────────────────────────────
+   #EC7200  mandarin orange  → primary actions
+   #32A29B  teal             → success / secondary
+   #DBDBDB  light grey       → borders / muted
+   #F4F3F3  near-white       → background
+   #1A1628  dark navy        → primary text
+──────────────────────────────────────────────────────── */
+
+:root {
+  --red:    #B85A00;
+  --sage:   #32A29B;
+  --olive:  #DBDBDB;
+  --cream:  #F4F3F3;
+  --ink:    #1A1628;
+  --ink2:   #636363;
+  --ink3:   #818181;
+  --border: #DBDBDB;
+  --card:   #FFFFFF;
+}
+
+@layer base {
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    /* Cloudforce-style dot grid + cursor spotlight on the body itself */
+    background-color: var(--cream);
+    background-image:
+      radial-gradient(
+        600px circle at var(--mx, -999px) var(--my, -999px),
+        rgba(184, 90, 0, 0.06) 0%,
+        transparent 60%
+      );
+    background-size: 100% 100%;
+    background-attachment: fixed;
+  }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #EDE9DF; }
+  ::-webkit-scrollbar-thumb { background: var(--olive); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--red); }
+}
+
+@layer components {
+  .card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+  }
+  .card-warm {
+    background: #F0EFED;
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--red); color: #fff;
+    font-weight: 600; font-size: 15px;
+    padding: 11px 22px; border-radius: 11px; border: none;
+    cursor: pointer; transition: background 0.15s, box-shadow 0.15s;
+    box-shadow: 0 1px 4px rgba(184,90,0,0.3);
+    white-space: nowrap;
+  }
+  .btn-primary:hover { background: #9B4A00; }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: transparent; color: var(--ink2);
+    font-size: 15px; padding: 8px 14px;
+    border-radius: 10px; border: none; cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .btn-ghost:hover { background: #EBEBEB; color: var(--ink); }
+
+  .input-field {
+    width: 100%; background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 13px 16px;
+    font-size: 16px; color: var(--ink);
+    outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+    font-family: inherit;
+  }
+  .input-field:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(184,90,0,0.12);
+  }
+  .input-field::placeholder { color: #B8AFA4; }
+
+  .tab-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 0; font-size: 14px;
+    font-weight: 500; border: none; cursor: pointer;
+    border-bottom: 2px solid transparent;
+    background: transparent; transition: all 0.15s;
+    color: var(--ink3);
+  }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--red); border-bottom-color: var(--red); font-weight: 600; }
+}
+
+/* Flip card */
+.flip-card { perspective: 1000px; }
+.flip-card-inner { transition: transform 0.55s cubic-bezier(.4,0,.2,1); transform-style: preserve-3d; }
+.flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+.flip-card-front, .flip-card-back { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.flip-card-back { transform: rotateY(180deg); }
+
+canvas { display: block; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.fade-in { animation: fadeIn 0.3s ease forwards; }
+
+/* ── Card spotlight ──────────────────────────────────────
+   Cards get a local glow when the cursor is nearby.
+   No dot grid here - body handles that globally.
+────────────────────────────────────────────────────────── */
+[data-spotlight] {
+  position: relative;
+  background-color: #FFFFFF;
+  background-image:
+    radial-gradient(
+      350px circle at var(--sx, -400px) var(--sy, -400px),
+      rgba(184, 90, 0, 0.08) 0%,
+      transparent 100%
+    );
+  transition: box-shadow 0.2s;
+}
+[data-spotlight]:hover {
+  box-shadow: 0 4px 24px rgba(184, 90, 0, 0.10);
+}
