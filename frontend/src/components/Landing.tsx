@@ -226,7 +226,7 @@ export default function Landing({ onAnalyze, onProvost, error, language, onLangu
               <Youtube size={18} color="#B8AFA4"
                 style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
               <input
-                type="url"
+                type="text"
                 value={url}
                 onChange={e => setUrl(e.target.value)}
                 placeholder="https://www.youtube.com/watch?v=..."

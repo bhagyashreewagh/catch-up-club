@@ -40,7 +40,7 @@ export async function getTranscript(videoId: string): Promise<TranscriptSegment[
   }
 
   return raw.map(s => ({
-    text: s.text.replace(/\n/g, ' ').replace(/&#39;/g, "'").replace(/&amp;/g, '&').replace(/&quot;/g, '"'),
+    text: s.text.replace(/\n/g, ' ').replace(/&#39;/g, "'").replace(/&#x27;/g, "'").replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n))),
     start: s.offset / 1000,
     duration: s.duration / 1000,
   }));

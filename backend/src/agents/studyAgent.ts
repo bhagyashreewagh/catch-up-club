@@ -66,5 +66,15 @@ ${text}`,
   const jsonMatch = raw.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error('Study agent returned malformed output');
 
-  return JSON.parse(jsonMatch[0]) as StudyMaterials;
+  let result: StudyMaterials;
+  try {
+    result = JSON.parse(jsonMatch[0]) as StudyMaterials;
+  } catch {
+    throw new Error('Study agent returned invalid JSON');
+  }
+  result.outline = result.outline ?? [];
+  result.flashcards = result.flashcards ?? [];
+  result.summaries = result.summaries ?? { brief: '', standard: '', comprehensive: '' };
+  result.keyTerms = result.keyTerms ?? [];
+  return result;
 }

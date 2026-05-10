@@ -26,9 +26,10 @@ function OutlineNode({
   depth?: number;
 }) {
   const [open, setOpen] = useState(depth === 0);
-  const hasChildren = item.children && item.children.length > 0;
+  const children = item.children ?? [];
+  const hasChildren = children.length > 0;
   const isActive = currentTime >= item.timestamp &&
-    (item.children.length === 0 || currentTime < (item.children[0]?.timestamp ?? Infinity));
+    (children.length === 0 || currentTime < (children[0]?.timestamp ?? Infinity));
 
   return (
     <div style={{ marginLeft: depth > 0 ? 16 : 0, borderLeft: depth > 0 ? '1.5px solid #E0E0E0' : 'none', paddingLeft: depth > 0 ? 12 : 0 }}>
@@ -70,8 +71,8 @@ function OutlineNode({
 
       {hasChildren && open && (
         <div style={{ marginTop: 4 }}>
-          {item.children.map((child, i) => (
-            <OutlineNode key={i} item={child} onSeek={onSeek} currentTime={currentTime} depth={depth + 1} />
+          {children.map((child, i) => (
+            <OutlineNode key={child.title ?? i} item={child} onSeek={onSeek} currentTime={currentTime} depth={depth + 1} />
           ))}
         </div>
       )}

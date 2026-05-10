@@ -59,7 +59,7 @@ export default function VideoPanel({ video, seekTarget, onTimeUpdate, markedConc
   }, []);
 
   useEffect(() => {
-    if (ready && seekTarget.time > 0) {
+    if (ready && seekTarget.key > 0) {
       const clamped = duration > 0 ? Math.min(seekTarget.time, duration - 1) : seekTarget.time;
       playerRef.current?.seekTo(clamped, true);
       playerRef.current?.playVideo();
@@ -67,7 +67,10 @@ export default function VideoPanel({ video, seekTarget, onTimeUpdate, markedConc
   }, [seekTarget.key, ready]);
 
   function fmtTime(s: number) {
-    return `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = String(Math.floor(s % 60)).padStart(2, '0');
+    return h > 0 ? `${h}:${String(m).padStart(2, '0')}:${sec}` : `${m}:${sec}`;
   }
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;

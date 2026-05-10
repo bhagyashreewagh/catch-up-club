@@ -31,9 +31,11 @@ export default function SocraticMode({ videoId, onSeek, language = 'en' }: Props
   const [evaluating, setEvaluating] = useState(false);
   const [evaluation, setEvaluation] = useState<QuizEvaluation | null>(null);
   const [records, setRecords] = useState<AnswerRecord[]>([]);
+  const [quizError, setQuizError] = useState<string | null>(null);
 
   async function startQuiz() {
     setPhase('loading');
+    setQuizError(null);
     try {
       const res = await fetch('/api/quiz/generate', {
         method: 'POST',
@@ -41,11 +43,13 @@ export default function SocraticMode({ videoId, onSeek, language = 'en' }: Props
         body: JSON.stringify({ videoId, language }),
       });
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Failed to generate quiz');
       setQuestions(data.questions ?? []);
       setCurrent(0);
       setRecords([]);
       setPhase('quiz');
-    } catch {
+    } catch (err) {
+      setQuizError(err instanceof Error ? err.message : 'Could not load quiz. Please try again.');
       setPhase('intro');
     }
   }
@@ -54,15 +58,19 @@ export default function SocraticMode({ videoId, onSeek, language = 'en' }: Props
     if (!answer.trim() || !questions[current]) return;
     setEvaluating(true);
     setEvaluation(null);
+    setQuizError(null);
     try {
       const res = await fetch('/api/quiz/evaluate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ videoId, question: questions[current].question, studentAnswer: answer, language }),
+        body: JSON.stringify({ videoId, question: questions[current].question, studentAnswer: answer.slice(0, 5000), language }),
       });
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Evaluation failed');
       setEvaluation(data.evaluation);
       setRecords(prev => [...prev, { question: questions[current], answer, evaluation: data.evaluation }]);
+    } catch (err) {
+      setQuizError(err instanceof Error ? err.message : 'Could not evaluate answer. Please try again.');
     } finally {
       setEvaluating(false);
     }
@@ -70,12 +78,12 @@ export default function SocraticMode({ videoId, onSeek, language = 'en' }: Props
 
   function nextQuestion() {
     if (current + 1 >= questions.length) setPhase('done');
-    else { setCurrent(c => c + 1); setAnswer(''); setEvaluation(null); }
+    else { setCurrent(c => c + 1); setAnswer(''); setEvaluation(null); setQuizError(null); }
   }
 
   function reset() {
     setPhase('intro'); setQuestions([]); setCurrent(0);
-    setAnswer(''); setEvaluation(null); setRecords([]);
+    setAnswer(''); setEvaluation(null); setRecords([]); setQuizError(null);
   }
 
   function fmtTime(s: number) {
@@ -109,6 +117,11 @@ export default function SocraticMode({ videoId, onSeek, language = 'en' }: Props
           <ChevronRight size={16} />
           Start quiz
         </button>
+        {quizError && (
+          <p style={{ fontSize: 13, color: '#991B1B', background: '#FEF2F2', border: '1px solid #FCA5A5', borderRadius: 10, padding: '10px 14px', margin: 0, maxWidth: 280 }}>
+            {quizError}
+          </p>
+        )}
       </div>
     );
   }
@@ -205,6 +218,11 @@ export default function SocraticMode({ videoId, onSeek, language = 'en' }: Props
             onBlur={e => { e.currentTarget.style.borderColor = '#DBDBDB'; }}
             disabled={evaluating}
           />
+          {quizError && (
+            <p style={{ fontSize: 13, color: '#991B1B', background: '#FEF2F2', border: '1px solid #FCA5A5', borderRadius: 10, padding: '10px 14px', margin: 0 }}>
+              {quizError}
+            </p>
+          )}
           <button
             onClick={submitAnswer}
             disabled={evaluating || !answer.trim()}

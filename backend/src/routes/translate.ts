@@ -41,7 +41,7 @@ router.post('/', async (req: Request, res: Response) => {
         role: 'user',
         content: `Translate all human-readable text in this JSON to ${languageName}. Keep all field names, IDs, timestamps, and numbers unchanged. Output only the translated JSON with no explanation:
 
-${JSON.stringify(study, null, 2)}`,
+${JSON.stringify(study, null, 2).slice(0, 60000)}`,
       }],
     });
 

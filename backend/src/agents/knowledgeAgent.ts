@@ -42,7 +42,14 @@ ${text}`,
   const jsonMatch = raw.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error('Knowledge agent returned malformed output');
 
-  const graph = JSON.parse(jsonMatch[0]) as KnowledgeGraph;
+  let graph: KnowledgeGraph;
+  try {
+    graph = JSON.parse(jsonMatch[0]) as KnowledgeGraph;
+  } catch {
+    throw new Error('Knowledge agent returned invalid JSON');
+  }
+  graph.concepts = graph.concepts ?? [];
+  graph.relationships = graph.relationships ?? [];
   // Ensure no orphan relationships
   const conceptIds = new Set(graph.concepts.map(c => c.id));
   graph.relationships = graph.relationships.filter(

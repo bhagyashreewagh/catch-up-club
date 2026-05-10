@@ -57,7 +57,7 @@ export default function SemanticSearch({ videoId, onSeek, language = 'en' }: Pro
           type="text"
           value={query}
           onChange={e => setQuery(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && handleSearch()}
+          onKeyDown={e => e.key === 'Enter' && !loading && handleSearch()}
           placeholder="Ask anything about this lecture..."
           className="input-field"
           style={{ paddingLeft: 40, paddingRight: 44 }}
