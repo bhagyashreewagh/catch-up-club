@@ -17,7 +17,7 @@ export async function runTranscriptAgent(url: string): Promise<TranscriptResult>
   }
 
   const videoId = extractVideoId(url);
-  if (!videoId) throw new Error("Couldn't recognise that as a YouTube URL. Try pasting the full link, e.g. https://www.youtube.com/watch?v=abc123");
+  if (!videoId) throw new Error("Couldn't recognise that as a YouTube URL. Please paste a full YouTube link.");
 
   const [video, segments] = await Promise.all([
     getVideoInfo(videoId),
