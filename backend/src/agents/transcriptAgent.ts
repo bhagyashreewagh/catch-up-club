@@ -10,8 +10,13 @@ export interface TranscriptResult {
 }
 
 export async function runTranscriptAgent(url: string): Promise<TranscriptResult> {
+  // Detect YouTube music radio / auto-playlist URLs before extracting ID
+  if (/[?&]start_radio=1/.test(url) || /[?&]list=RD/.test(url)) {
+    throw new Error("That looks like a YouTube Music radio link. Please paste a direct lecture URL — e.g. youtube.com/watch?v=...");
+  }
+
   const videoId = extractVideoId(url);
-  if (!videoId) throw new Error('Invalid YouTube URL. Please use a standard youtube.com/watch or youtu.be link.');
+  if (!videoId) throw new Error("Couldn't recognise that as a YouTube URL. Try pasting the full link, e.g. https://www.youtube.com/watch?v=abc123");
 
   const [video, segments] = await Promise.all([
     getVideoInfo(videoId),
