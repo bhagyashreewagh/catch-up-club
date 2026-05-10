@@ -69,7 +69,7 @@ export default function App() {
   return (
     <ParticleProvider>
       <FluidBackground />
-      <div style={{ minHeight: '100vh', background: 'transparent', position: 'relative', zIndex: 1 }}>
+      <div style={{ minHeight: '100vh', background: 'transparent', position: 'relative', zIndex: 2 }}>
         {view === 'landing' && (
           <Landing onAnalyze={handleAnalyze} onProvost={() => setView('provost')} error={error} language={language} onLanguageChange={setLanguage} />
         )}

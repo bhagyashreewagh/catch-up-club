@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
 
 const COLORS = [
-  { r: 0.70, g: 0.32, b: 0.02 }, // strong burnt orange
-  { r: 0.62, g: 0.24, b: 0.01 }, // deep orange
-  { r: 0.48, g: 0.22, b: 0.08 }, // warm brown
-  { r: 0.78, g: 0.38, b: 0.08 }, // copper orange
+  { r: 0.22, g: 0.08, b: 0.02 },
+  { r: 0.18, g: 0.06, b: 0.01 },
+  { r: 0.26, g: 0.10, b: 0.03 },
+  { r: 0.20, g: 0.07, b: 0.02 },
+  { r: 0.15, g: 0.05, b: 0.01 },
 ];
 
 const VERT = `
@@ -253,14 +254,14 @@ export default function FluidBackground() {
 
     const filter = filterLinear ? gl.LINEAR : gl.NEAREST;
 
-    const SIM = 128;
+    const SIM = 32;
     const DYE = 512;
-    const PRESSURE_ITERS = 20;
-    const DENSITY_DISS = 3.8;
-    const VELOCITY_DISS = 0.992;
-    const CURL_STRENGTH = 4;
-    const SPLAT_RADIUS = 0.0045;
-    const SPLAT_FORCE = 350;
+    const PRESSURE_ITERS = 2;
+    const DENSITY_DISS = 1.0;
+    const VELOCITY_DISS = 0.2;
+    const CURL_STRENGTH = 0;
+    const SPLAT_RADIUS = 0.45;
+    const SPLAT_FORCE = 676;
 
     type FBO = {
       tex: WebGLTexture; fb: WebGLFramebuffer; w: number; h: number;
@@ -348,36 +349,56 @@ export default function FluidBackground() {
     }
 
     let lastT = performance.now();
-    let prevX = -1, prevY = -1;
     let colorIdx = 0;
 
+    function multipleSplats(count: number) {
+      for (let i = 0; i < count; i++) {
+        splat(
+          Math.random(),
+          Math.random(),
+          (Math.random() - 0.5) * SPLAT_FORCE,
+          (Math.random() - 0.5) * SPLAT_FORCE,
+          COLORS[colorIdx++ % COLORS.length]
+        );
+      }
+    }
+
+    // Initial burst on load
+    multipleSplats(Math.floor(Math.random() * 5) + 5);
+
+    // Cursor interaction — small radius so no spotlight blob
+    let prevX = -1, prevY = -1;
     function onMove(e: MouseEvent) {
       const x = e.clientX / canvas.width;
       const y = e.clientY / canvas.height;
       if (prevX < 0) { prevX = x; prevY = y; return; }
-      const dx = (x - prevX) * SPLAT_FORCE;
-      const dy = (y - prevY) * SPLAT_FORCE;
-      if (Math.abs(dx) + Math.abs(dy) > 0.001) {
-        splat(x, y, dx, dy, COLORS[colorIdx++ % COLORS.length]);
+      const dx = (x - prevX) * 400;
+      const dy = (y - prevY) * 400;
+      if (Math.abs(dx) + Math.abs(dy) > 0.0008) {
+        const col = COLORS[colorIdx++ % COLORS.length];
+        // Use smaller radius for cursor than ambient splats
+        gl.useProgram(pSplat);
+        gl.uniform2f(u(gl, pSplat, 'texelSize'), 1/SIM, 1/SIM);
+        gl.uniform1i(u(gl, pSplat, 'uTarget'), vel.read.bind(0));
+        gl.uniform1f(u(gl, pSplat, 'aspectRatio'), canvas.width / canvas.height);
+        gl.uniform2f(u(gl, pSplat, 'point'), x, 1 - y);
+        gl.uniform3f(u(gl, pSplat, 'color'), dx, -dy, 0);
+        gl.uniform1f(u(gl, pSplat, 'radius'), 0.08);
+        blit(vel.write); vel.swap();
+        gl.uniform1i(u(gl, pSplat, 'uTarget'), dye.read.bind(0));
+        gl.uniform2f(u(gl, pSplat, 'texelSize'), 1/DYE, 1/DYE);
+        gl.uniform3f(u(gl, pSplat, 'color'), col.r * 0.15, col.g * 0.15, col.b * 0.15);
+        blit(dye.write); dye.swap();
       }
       prevX = x; prevY = y;
     }
-    function onLeave() { prevX = -1; prevY = -1; }
-
     window.addEventListener('mousemove', onMove, { passive: true });
-    window.addEventListener('mouseleave', onLeave);
+    window.addEventListener('mouseleave', () => { prevX = -1; prevY = -1; });
 
-    // Ambient splats so the background feels alive without cursor movement
+    // Idle ambient splats every 6s like CloudForce
     const ambientInterval = setInterval(() => {
-      const x = Math.random();
-      const y = Math.random() * 0.7;
-      splat(
-        x, y,
-        (Math.random() - 0.5) * 250,
-        (Math.random() - 0.5) * 250,
-        COLORS[Math.floor(Math.random() * COLORS.length)]
-      );
-    }, 1800);
+      multipleSplats(Math.floor(Math.random() * 3) + 2);
+    }, 6000);
 
     function step(dt: number) {
       gl.disable(gl.BLEND);
@@ -471,7 +492,6 @@ export default function FluidBackground() {
       cancelAnimationFrame(rafId);
       clearInterval(ambientInterval);
       window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('mouseleave', onLeave);
       window.removeEventListener('resize', onResize);
     };
   }, []);
@@ -479,14 +499,8 @@ export default function FluidBackground() {
   return (
     <canvas
       ref={canvasRef}
-      style={{
-        position: 'fixed',
-        top: 0, left: 0,
-        width: '100vw', height: '100vh',
-        pointerEvents: 'none',
-        zIndex: 0,
-        opacity: 0.14,
-      }}
+      className="fluid-canvas"
+      style={{ opacity: 0.55 }}
     />
   );
 }
