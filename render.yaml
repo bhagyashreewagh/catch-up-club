@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: catch-up-club
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: npm run build
+    startCommand: npm start
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        generateValue: false
+    healthCheckPath: /api/health
