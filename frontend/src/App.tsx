@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ParticleProvider } from './components/ParticleEffect';
+import FluidBackground from './components/FluidBackground';
 import type { AnalysisResult, AppView, AgentStatus, ProvostResult } from './types';
 import Landing from './components/Landing';
 import ProcessingView from './components/ProcessingView';
@@ -67,7 +68,8 @@ export default function App() {
 
   return (
     <ParticleProvider>
-      <div style={{ minHeight: '100vh', background: 'transparent' }}>
+      <FluidBackground />
+      <div style={{ minHeight: '100vh', background: 'transparent', position: 'relative', zIndex: 1 }}>
         {view === 'landing' && (
           <Landing onAnalyze={handleAnalyze} onProvost={() => setView('provost')} error={error} language={language} onLanguageChange={setLanguage} />
         )}

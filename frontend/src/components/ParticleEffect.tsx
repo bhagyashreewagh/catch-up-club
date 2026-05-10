@@ -3,12 +3,17 @@ import { createContext, useContext, useEffect } from 'react';
 const Ctx = createContext<(x: number, y: number) => void>(() => {});
 export const useParticle = () => useContext(Ctx);
 
-const LERP = 0.08;
+// Three blobs follow cursor at different speeds for liquid feel
+const BLOBS = [
+  { lerp: 0.09, cssX: '--mx',  cssY: '--my'  },
+  { lerp: 0.05, cssX: '--mx2', cssY: '--my2' },
+  { lerp: 0.03, cssX: '--mx3', cssY: '--my3' },
+];
 
 export function ParticleProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let targetX = -999, targetY = -999;
-    let currentX = -999, currentY = -999;
+    const pos = BLOBS.map(() => ({ x: -999, y: -999 }));
     let rafId: number;
 
     function onMouseMove(e: MouseEvent) {
@@ -17,20 +22,11 @@ export function ParticleProvider({ children }: { children: React.ReactNode }) {
     }
 
     function tick() {
-      currentX += (targetX - currentX) * LERP;
-      currentY += (targetY - currentY) * LERP;
-
-      // Drive body's background spotlight via --mx/--my on <html>
-      // body inherits custom props from html
-      document.documentElement.style.setProperty('--mx', `${currentX}px`);
-      document.documentElement.style.setProperty('--my', `${currentY}px`);
-
-      // Also drive per-card spotlights
-      const els = document.querySelectorAll<HTMLElement>('[data-spotlight]');
-      els.forEach(el => {
-        const rect = el.getBoundingClientRect();
-        el.style.setProperty('--sx', `${targetX - rect.left}px`);
-        el.style.setProperty('--sy', `${targetY - rect.top}px`);
+      BLOBS.forEach((blob, i) => {
+        pos[i].x += (targetX - pos[i].x) * blob.lerp;
+        pos[i].y += (targetY - pos[i].y) * blob.lerp;
+        document.documentElement.style.setProperty(blob.cssX, `${pos[i].x}px`);
+        document.documentElement.style.setProperty(blob.cssY, `${pos[i].y}px`);
       });
 
       rafId = requestAnimationFrame(tick);
