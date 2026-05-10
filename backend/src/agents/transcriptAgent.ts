@@ -18,8 +18,20 @@ export async function runTranscriptAgent(url: string): Promise<TranscriptResult>
     getTranscript(videoId),
   ]);
 
+  // Guard: detect music videos by ♪ symbol prevalence
+  const musicSegments = segments.filter(s => s.text.includes('♪') || s.text.includes('♫'));
+  if (musicSegments.length > segments.length * 0.3) {
+    throw new Error('This looks like a music video, not a lecture. Please paste a YouTube lecture or educational video URL.');
+  }
+
   const text = segmentsToText(segments);
   const wordCount = text.split(/\s+/).length;
+
+  // Guard: too short to be a useful lecture (< 100 real words)
+  if (wordCount < 100) {
+    throw new Error('This video is too short or has too little speech to analyze. Please use a lecture that is at least a few minutes long.');
+  }
+
   const lastSegment = segments[segments.length - 1];
   const durationMinutes = lastSegment
     ? Math.ceil((lastSegment.start + lastSegment.duration) / 60)
