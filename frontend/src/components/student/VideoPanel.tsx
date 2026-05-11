@@ -96,19 +96,27 @@ export default function VideoPanel({ video, seekTarget, onTimeUpdate, markedConc
           </div>
         )}
         {embedBlocked && (
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#1A1628', gap: 12, padding: 24, textAlign: 'center' }}>
-            <span style={{ fontSize: 13, color: '#9B8C8C' }}>This video can't be played here — the owner has disabled embedding.</span>
-            <a
-              href={video.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', background: '#B85A00', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}
-            >
-              <ExternalLink size={13} />
-              Watch on YouTube
-            </a>
-            <span style={{ fontSize: 12, color: '#636363' }}>The study materials below are still fully available.</span>
-          </div>
+          <a
+            href={video.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ position: 'absolute', inset: 0, display: 'block', textDecoration: 'none' }}
+          >
+            <img
+              src={video.thumbnailUrl}
+              alt={video.title}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+            {/* dark overlay */}
+            <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)' }} />
+            {/* play button */}
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+              <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid rgba(255,255,255,0.4)' }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21" /></svg>
+              </div>
+              <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', fontWeight: 500 }}>Watch on YouTube</span>
+            </div>
+          </a>
         )}
       </div>
 
