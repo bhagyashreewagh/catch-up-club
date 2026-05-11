@@ -16,10 +16,10 @@ router.post('/', async (req: Request, res: Response) => {
     return;
   }
 
-  // Cache key is stored as "videoId:language" — try exact match first, then any language
+  // Cache key is stored as "videoId:language:mode" — try student first, then any match
   const cached =
-    analysisCache.get(videoId + ':' + language) ??
-    analysisCache.get(videoId + ':en') ??
+    analysisCache.get(videoId + ':' + language + ':student') ??
+    analysisCache.get(videoId + ':en:student') ??
     [...analysisCache.entries()].find(([k]) => k.startsWith(videoId + ':'))?.[1];
 
   if (!cached) {

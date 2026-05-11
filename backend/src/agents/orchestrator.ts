@@ -29,8 +29,9 @@ export async function orchestrate(
     const transcriptResult = await runTranscriptAgent(url);
     const { video, segments, text, wordCount, durationMinutes } = transcriptResult;
 
-    const cached = analysisCache.get(video.id + ':' + language);
-    if (cached && !includeFaculty) {
+    const cacheKey = video.id + ':' + language + (includeFaculty ? ':faculty' : ':student');
+    const cached = analysisCache.get(cacheKey);
+    if (cached) {
       send(res, { type: 'agent_complete', agent: 'transcript', message: `Loaded from cache: ${durationMinutes} min lecture` });
       send(res, { type: 'complete', result: cached });
       return;
@@ -92,7 +93,7 @@ export async function orchestrate(
       ...(includeFaculty && audit ? { audit } : {}),
     };
 
-    analysisCache.set(video.id + ':' + language, result);
+    analysisCache.set(cacheKey, result);
     send(res, { type: 'complete', result });
 
   } catch (err) {
