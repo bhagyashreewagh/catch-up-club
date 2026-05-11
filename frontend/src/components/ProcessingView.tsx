@@ -11,6 +11,7 @@ const AGENT_META: Record<string, { label: string; icon: React.ReactNode; color: 
 
 export default function ProcessingView({ agents, language }: { agents: AgentStatus[]; language?: string }) {
   const running = agents.filter(a => a.status === 'running').length;
+  const hasFaculty = agents.some(a => a.agent === 'faculty');
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 24px' }}>
@@ -88,7 +89,7 @@ export default function ProcessingView({ agents, language }: { agents: AgentStat
 
       <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }}
         style={{ marginTop: 40, fontSize: 14, color: '#818181', textAlign: 'center', maxWidth: 340 }}>
-        Knowledge + Study agents run in parallel for faster results.
+        {hasFaculty ? 'Knowledge + Audit agents run in parallel.' : 'Knowledge + Study agents run in parallel.'}
       </motion.p>
     </div>
   );
