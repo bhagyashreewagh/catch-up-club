@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Home, BookOpen, Play, AlertTriangle, CheckCircle2, ChevronDown, ChevronUp, Users, GraduationCap } from 'lucide-react';
+import { Home, BookOpen, Play, AlertTriangle, CheckCircle2, ChevronDown, ChevronUp, Users } from 'lucide-react';
 import type { AnalysisResult, AuditDimension } from '../../types';
 
 interface Props {
@@ -191,12 +191,6 @@ export default function FacultyView({ result, onHome, onSeek, onSwitchStudent }:
           <DimensionCard label="Equity"       dim={audit.equity}       color="#7C5D0E" onSeek={onSeek} />
         </div>
 
-        <div style={{ marginTop: 40, paddingTop: 24, borderTop: '1.5px solid #DBDBDB', display: 'flex', justifyContent: 'center' }}>
-          <button onClick={onSwitchStudent} className="btn-ghost">
-            <GraduationCap size={16} />
-            View student study materials →
-          </button>
-        </div>
       </div>
     </div>
   );
