@@ -87,10 +87,6 @@ export default function ProcessingView({ agents, language }: { agents: AgentStat
         })}
       </div>
 
-      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }}
-        style={{ marginTop: 40, fontSize: 14, color: '#818181', textAlign: 'center', maxWidth: 340 }}>
-        {hasFaculty ? 'Knowledge + Audit agents run in parallel.' : 'Knowledge + Study agents run in parallel.'}
-      </motion.p>
     </div>
   );
 }

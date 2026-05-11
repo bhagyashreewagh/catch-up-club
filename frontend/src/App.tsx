@@ -27,7 +27,9 @@ export default function App() {
     setAgentStatuses([]);
     setView('processing');
 
-    const AGENTS = ['transcript', 'knowledge', 'faculty', 'study'];
+    const AGENTS = includeFaculty
+      ? ['transcript', 'knowledge', 'faculty', 'study']
+      : ['transcript', 'knowledge', 'study'];
     setAgentStatuses(AGENTS.map(a => ({ agent: a, status: 'idle', message: '' })));
 
     const params = new URLSearchParams({ url, faculty: String(includeFaculty), language });
