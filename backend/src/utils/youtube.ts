@@ -17,14 +17,48 @@ export function extractVideoId(url: string): string | null {
 }
 
 export async function getVideoInfo(videoId: string): Promise<VideoInfo> {
-  const oembedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
-  const res = await fetch(oembedUrl);
-  if (!res.ok) throw new Error(`Could not fetch video info (status ${res.status}). Is the video public?`);
-  const data = await res.json() as { title: string; author_name: string };
+  // Try oEmbed first
+  try {
+    const oembedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+    const res = await fetch(oembedUrl);
+    if (res.ok) {
+      const data = await res.json() as { title: string; author_name: string };
+      return {
+        id: videoId,
+        title: data.title,
+        author: data.author_name,
+        thumbnailUrl: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
+        url: `https://www.youtube.com/watch?v=${videoId}`,
+      };
+    }
+  } catch { /* fall through to scrape */ }
+
+  // Fallback: scrape title from YouTube page (works for public videos with embedding disabled)
+  try {
+    const pageRes = await fetch(`https://www.youtube.com/watch?v=${videoId}`, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1)' },
+    });
+    if (pageRes.ok) {
+      const html = await pageRes.text();
+      const titleMatch = html.match(/<title>([^<]+)<\/title>/);
+      const title = titleMatch ? titleMatch[1].replace(' - YouTube', '').trim() : 'YouTube Lecture';
+      const authorMatch = html.match(/"ownerChannelName":"([^"]+)"/);
+      const author = authorMatch ? authorMatch[1] : 'Unknown';
+      return {
+        id: videoId,
+        title,
+        author,
+        thumbnailUrl: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
+        url: `https://www.youtube.com/watch?v=${videoId}`,
+      };
+    }
+  } catch { /* fall through */ }
+
+  // Last resort: return placeholder so transcript can still be fetched
   return {
     id: videoId,
-    title: data.title,
-    author: data.author_name,
+    title: 'YouTube Lecture',
+    author: 'Unknown',
     thumbnailUrl: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
     url: `https://www.youtube.com/watch?v=${videoId}`,
   };
