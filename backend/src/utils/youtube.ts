@@ -1,4 +1,5 @@
 import { YoutubeTranscript } from 'youtube-transcript';
+import https from 'https';
 import type { VideoInfo, TranscriptSegment } from '../types.js';
 
 export function extractVideoId(url: string): string | null {
@@ -44,18 +45,27 @@ async function fetchViaSupadata(videoId: string): Promise<TranscriptSegment[]> {
   const apiKey = process.env.SUPADATA_API_KEY;
   if (!apiKey) throw new Error('SUPADATA_API_KEY not set');
 
-  const res = await fetch(`https://api.supadata.ai/v1/youtube/transcript?videoId=${videoId}&lang=en`, {
-    headers: {
-      'x-api-key': apiKey,
-    },
+  // Use Node's https directly — avoids Node 18 experimental fetch issues
+  const rawBody = await new Promise<string>((resolve, reject) => {
+    const url = new URL(`https://api.supadata.ai/v1/youtube/transcript?videoId=${videoId}&lang=en`);
+    https.request(
+      { hostname: url.hostname, path: url.pathname + url.search, method: 'GET', headers: { 'x-api-key': apiKey } },
+      (res) => {
+        if (res.statusCode && res.statusCode >= 400) {
+          reject(new Error(`Supadata API error ${res.statusCode}`));
+          res.resume();
+          return;
+        }
+        const chunks: Buffer[] = [];
+        res.on('data', (c: Buffer) => chunks.push(c));
+        res.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+        res.on('error', reject);
+      }
+    ).on('error', reject).end();
   });
 
-  if (!res.ok) {
-    const body = await res.text().catch(() => '');
-    throw new Error(`Supadata API error ${res.status}: ${body.slice(0, 100)}`);
-  }
-
-  const data = await res.json() as any;
+  const data = JSON.parse(rawBody) as any;
+  if (data?.error) throw new Error(`Supadata: ${data.message ?? data.error}`);
 
   // Supadata returns { content: [{ text, offset, duration }] } or { chunks: [...] }
   const chunks: any[] = data?.content ?? data?.chunks ?? data?.transcript ?? [];

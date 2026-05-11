@@ -21,7 +21,7 @@ export default function ProcessingView({ agents, language }: { agents: AgentStat
           <h1 style={{ fontSize: 28, fontWeight: 700, color: '#1A1628', margin: 0 }}>Analyzing your lecture</h1>
         </div>
         <p style={{ fontSize: 16, color: '#636363', margin: 0 }}>
-          {running > 0 ? `${running} agent${running > 1 ? 's' : ''} working in parallel…` : 'Initializing…'}
+          {running > 0 ? `${running > 1 ? `${running} agents running…` : 'Agents running…'}` : 'Initializing…'}
         </p>
       </motion.div>
 
@@ -88,7 +88,7 @@ export default function ProcessingView({ agents, language }: { agents: AgentStat
 
       <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }}
         style={{ marginTop: 40, fontSize: 14, color: '#818181', textAlign: 'center', maxWidth: 340 }}>
-        Knowledge + Audit agents run in parallel. A typical lecture takes 30 to 60 seconds.
+        Knowledge + Study agents run in parallel for faster results.
       </motion.p>
     </div>
   );
