@@ -44,10 +44,9 @@ async function fetchViaSupadata(videoId: string): Promise<TranscriptSegment[]> {
   const apiKey = process.env.SUPADATA_API_KEY;
   if (!apiKey) throw new Error('SUPADATA_API_KEY not set');
 
-  const res = await fetch(`https://api.supadata.ai/v1/youtube/transcript?videoId=${videoId}`, {
+  const res = await fetch(`https://api.supadata.ai/v1/youtube/transcript?videoId=${videoId}&lang=en`, {
     headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
     },
   });
 
@@ -66,8 +65,8 @@ async function fetchViaSupadata(videoId: string): Promise<TranscriptSegment[]> {
 
   return chunks.map((c: any) => ({
     text: decodeEntities(String(c.text ?? '')),
-    start: (c.offset ?? c.start ?? 0) / (c.offset !== undefined ? 1000 : 1),
-    duration: (c.duration ?? 0) / (c.offset !== undefined ? 1000 : 1),
+    start: (c.offset ?? 0) / 1000,
+    duration: (c.duration ?? 0) / 1000,
   })).filter(s => s.text.length > 0);
 }
 
