@@ -26,6 +26,7 @@ export default function VideoPanel({ video, seekTarget, onTimeUpdate, markedConc
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [ready, setReady] = useState(false);
+  const [embedBlocked, setEmbedBlocked] = useState(false);
 
   useEffect(() => {
     if (window.YT?.Player) { initPlayer(); return; }
@@ -49,6 +50,10 @@ export default function VideoPanel({ video, seekTarget, onTimeUpdate, markedConc
             setCurrentTime(t);
             onTimeUpdate?.(t);
           }, 500);
+        },
+        onError: (e: { data: number }) => {
+          // 101 / 150 = embedding disabled by video owner
+          if (e.data === 101 || e.data === 150) setEmbedBlocked(true);
         },
       },
     });
@@ -83,11 +88,26 @@ export default function VideoPanel({ video, seekTarget, onTimeUpdate, markedConc
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       {/* YouTube embed */}
-      <div style={{ position: 'relative', borderRadius: 14, overflow: 'hidden', background: '#000', aspectRatio: '16/9' }}>
+      <div style={{ position: 'relative', borderRadius: 14, overflow: 'hidden', background: '#1A1628', aspectRatio: '16/9' }}>
         <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
-        {!ready && (
+        {!ready && !embedBlocked && (
           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#1A1628' }}>
             <div style={{ width: 28, height: 28, border: '2px solid rgba(127,32,32,0.3)', borderTopColor: '#B85A00', borderRadius: '50%', animation: 'spin 0.75s linear infinite' }} />
+          </div>
+        )}
+        {embedBlocked && (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#1A1628', gap: 12, padding: 24, textAlign: 'center' }}>
+            <span style={{ fontSize: 13, color: '#9B8C8C' }}>This video can't be played here — the owner has disabled embedding.</span>
+            <a
+              href={video.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', background: '#B85A00', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}
+            >
+              <ExternalLink size={13} />
+              Watch on YouTube
+            </a>
+            <span style={{ fontSize: 12, color: '#636363' }}>The study materials below are still fully available.</span>
           </div>
         )}
       </div>
