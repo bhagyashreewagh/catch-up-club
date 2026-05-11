@@ -10,6 +10,7 @@ import searchRouter from './routes/search.js';
 import quizRouter from './routes/quiz.js';
 import provostRouter from './routes/provost.js';
 import translateRouter from './routes/translate.js';
+import diagramRouter from './routes/diagram.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -24,6 +25,7 @@ app.use('/api/search', searchRouter);
 app.use('/api/quiz', quizRouter);
 app.use('/api/provost', provostRouter);
 app.use('/api/translate', translateRouter);
+app.use('/diagram', diagramRouter);
 
 // Serve built frontend in production
 const frontendDist = join(__dirname, '../../frontend/dist');
