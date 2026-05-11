@@ -32,7 +32,10 @@ export interface QuizEvaluation {
 router.post('/generate', async (req: Request, res: Response) => {
   const { videoId, language = 'en' } = req.body as { videoId: string; language?: string };
 
-  const cached = analysisCache.get(videoId + ':' + language) ?? analysisCache.get(videoId + ':en');
+  const cached =
+    analysisCache.get(videoId + ':' + language + ':student') ??
+    analysisCache.get(videoId + ':en:student') ??
+    [...analysisCache.entries()].find(([k]) => k.startsWith(videoId + ':'))?.[1];
   if (!cached) {
     res.status(404).json({ error: 'Video not analyzed yet.' });
     return;
@@ -90,7 +93,10 @@ router.post('/evaluate', async (req: Request, res: Response) => {
     language?: string;
   };
 
-  const cached = analysisCache.get(videoId + ':' + language) ?? analysisCache.get(videoId + ':en');
+  const cached =
+    analysisCache.get(videoId + ':' + language + ':student') ??
+    analysisCache.get(videoId + ':en:student') ??
+    [...analysisCache.entries()].find(([k]) => k.startsWith(videoId + ':'))?.[1];
   if (!cached) {
     res.status(404).json({ error: 'Video not analyzed yet.' });
     return;
