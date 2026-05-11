@@ -66,25 +66,28 @@ export async function orchestrate(
       });
     }
 
-    const langName = LANGUAGE_NAMES[language] ?? 'English';
-    const studyMsg = language !== 'en'
-      ? `Crafting study materials in ${langName}...`
-      : 'Crafting personalized study materials...';
-    send(res, { type: 'agent_start', agent: 'study', message: studyMsg });
+    let study;
+    if (!includeFaculty) {
+      const langName = LANGUAGE_NAMES[language] ?? 'English';
+      const studyMsg = language !== 'en'
+        ? `Crafting study materials in ${langName}...`
+        : 'Crafting personalized study materials...';
+      send(res, { type: 'agent_start', agent: 'study', message: studyMsg });
 
-    const study = await runStudyAgent(text, graph, language);
+      study = await runStudyAgent(text, graph, language);
 
-    send(res, {
-      type: 'agent_complete',
-      agent: 'study',
-      message: `${study.flashcards.length} flashcards, ${study.outline.length} chapters, 3 summaries ready`,
-    });
+      send(res, {
+        type: 'agent_complete',
+        agent: 'study',
+        message: `${study.flashcards.length} flashcards, ${study.outline.length} chapters, 3 summaries ready`,
+      });
+    }
 
     const result: AnalysisResult = {
       video,
       segments,
       graph,
-      study,
+      study: study ?? { outline: [], flashcards: [], summaries: { brief: '', standard: '', comprehensive: '' }, keyTerms: [] },
       language,
       ...(includeFaculty && audit ? { audit } : {}),
     };

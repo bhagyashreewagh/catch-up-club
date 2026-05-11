@@ -28,7 +28,7 @@ export default function App() {
     setView('processing');
 
     const AGENTS = includeFaculty
-      ? ['transcript', 'knowledge', 'faculty', 'study']
+      ? ['transcript', 'knowledge', 'faculty']
       : ['transcript', 'knowledge', 'study'];
     setAgentStatuses(AGENTS.map(a => ({ agent: a, status: 'idle', message: '' })));
 
