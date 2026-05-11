@@ -16,7 +16,12 @@ router.post('/', async (req: Request, res: Response) => {
     return;
   }
 
-  const cached = analysisCache.get(videoId);
+  // Cache key is stored as "videoId:language" — try exact match first, then any language
+  const cached =
+    analysisCache.get(videoId + ':' + language) ??
+    analysisCache.get(videoId + ':en') ??
+    [...analysisCache.entries()].find(([k]) => k.startsWith(videoId + ':'))?.[1];
+
   if (!cached) {
     res.status(404).json({ error: 'Video not analyzed yet. Please analyze it first.' });
     return;
