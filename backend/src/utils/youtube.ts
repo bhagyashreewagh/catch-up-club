@@ -59,7 +59,7 @@ export async function getVideoInfo(videoId: string): Promise<VideoInfo> {
       };
     }
   } catch (e: any) {
-    if (e?.message === 'LIVE_STREAM') throw new Error('Live streams cannot be analyzed — there are no captions to work with. Please paste a recorded lecture URL instead.');
+    if (e?.message === 'LIVE_STREAM') throw new Error('Live streams cannot be analyzed. Please paste a recorded lecture URL instead.');
     /* fall through */
   }
 

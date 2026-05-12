@@ -18,7 +18,7 @@ export async function runTranscriptAgent(url: string): Promise<TranscriptResult>
 
   // Detect live stream URL patterns
   if (/youtube\.com\/live\//.test(url) || /[?&]live=1/.test(url)) {
-    throw new Error("Live streams cannot be analyzed — there are no captions to work with. Please paste a recorded lecture URL instead.");
+    throw new Error("Live streams cannot be analyzed. Please paste a recorded lecture URL instead.");
   }
 
   const videoId = extractVideoId(url);
