@@ -40,6 +40,12 @@ export async function getVideoInfo(videoId: string): Promise<VideoInfo> {
     });
     if (pageRes.ok) {
       const html = await pageRes.text();
+
+      // Detect live streams before going further
+      if (/"isLiveBroadcast"\s*:\s*true/.test(html) || /"isLiveContent"\s*:\s*true/.test(html)) {
+        throw new Error('LIVE_STREAM');
+      }
+
       const titleMatch = html.match(/<title>([^<]+)<\/title>/);
       const title = titleMatch ? titleMatch[1].replace(' - YouTube', '').trim() : 'YouTube Lecture';
       const authorMatch = html.match(/"ownerChannelName":"([^"]+)"/);
@@ -52,7 +58,10 @@ export async function getVideoInfo(videoId: string): Promise<VideoInfo> {
         url: `https://www.youtube.com/watch?v=${videoId}`,
       };
     }
-  } catch { /* fall through */ }
+  } catch (e: any) {
+    if (e?.message === 'LIVE_STREAM') throw new Error('Live streams cannot be analyzed — there are no captions to work with. Please paste a recorded lecture URL instead.');
+    /* fall through */
+  }
 
   // Last resort: return placeholder so transcript can still be fetched
   return {

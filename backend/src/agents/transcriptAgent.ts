@@ -16,6 +16,11 @@ export async function runTranscriptAgent(url: string): Promise<TranscriptResult>
     throw new Error("That looks like a YouTube Music radio link. Please paste a direct lecture URL — e.g. youtube.com/watch?v=...");
   }
 
+  // Detect live stream URL patterns
+  if (/youtube\.com\/live\//.test(url) || /[?&]live=1/.test(url)) {
+    throw new Error("Live streams cannot be analyzed — there are no captions to work with. Please paste a recorded lecture URL instead.");
+  }
+
   const videoId = extractVideoId(url);
   if (!videoId) throw new Error("Couldn't recognise that as a YouTube URL. Please paste a full YouTube link.");
 
