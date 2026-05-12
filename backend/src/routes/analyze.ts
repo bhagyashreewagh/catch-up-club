@@ -14,6 +14,9 @@ router.get('/', async (req: Request, res: Response) => {
     return;
   }
 
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+  console.log(`[analyze] ${new Date().toISOString()}  IP: ${ip}  mode: ${faculty ? 'faculty' : 'student'}  lang: ${language}  url: ${url}`);
+
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
